@@ -1,0 +1,48 @@
+# Основные настройки проекта
+PROJECT_NAME           = "Matrix Project"
+PROJECT_NUMBER         = "1.0"
+PROJECT_BRIEF          = "Библиотека для работы с матрицами на C"
+GENERATE_TITLES = YES
+
+# Папка вывода
+OUTPUT_DIRECTORY       = docs
+
+# Язык вывода
+OUTPUT_LANGUAGE        = Russian
+
+# Оптимизация под C
+OPTIMIZE_OUTPUT_FOR_C  = YES
+
+# Главная страница
+USE_MDFILE_AS_MAINPAGE = docs/mainpage.md
+
+# Настройки ввода	
+INPUT                 = src/ include/ tests/ include/mainpage.md data/ src/main.c
+FILE_PATTERNS         = *.c *.h *.md *.css
+RECURSIVE             = YES
+EXCLUDE               = build/
+FULL_PATH_NAMES       = YES
+SHOW_FILES            = YES
+
+# Извлечение документации
+EXTRACT_ALL           = YES
+EXTRACT_PRIVATE       = NO
+EXTRACT_STATIC        = YES
+
+# Генерация HTML и PDF (LaTeX)
+GENERATE_HTML         = YES
+GENERATE_LATEX        = NO
+HTML_OUTPUT           = html
+
+# Поддержка Markdown
+MARKDOWN_SUPPORT      = YES
+
+# Улучшение HTML
+HTML_COLORSTYLE_HUE   = 220
+HTML_EXTRA_STYLESHEET = docs/custom.css
+
+
+
+UML_LOOK = YES
+GENERATE_TREEVIEW = YES
+
