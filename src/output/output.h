@@ -25,7 +25,6 @@
  * @param rows Количество строк
  * @param cols Количество столбцов
  * @param data Указатель на массив
- * @return Указатель на созданную матрицу или NULL в случае ошибки
  */
 void output_print_matrix (int rows, int cols, const double* data);
 
@@ -34,8 +33,8 @@ void output_print_matrix (int rows, int cols, const double* data);
  * @param rows Количество строк
  * @param cols Количество столбцов
  * @param data Указатель на массив
- * @param filename Указатель на строку, куда нужно сохранить данные
- * @return Указатель на созданную матрицу или NULL в случае ошибки
+ * @param filename Указатель на файл для сохранения матрицы
+ * @return 0 при успехе, -1 при ошибке
  */
 int output_save_matrix_to_file (int rows, int cols, const double* data,
                                 const char* filename);
@@ -44,7 +43,7 @@ int output_save_matrix_to_file (int rows, int cols, const double* data,
  * @brief Загружает матрицу из файла
  * @param rows Количество строк
  * @param cols Количество столбцов
- * @param filename Указатель на строку, куда нужно сохранить данные
+ * @param filename Указатель на файл для чтения матрицы
  * @return Указатель на созданную матрицу или NULL в случае ошибки
  */
 double* output_load_matrix_from_file (int* rows, int* cols, const char* filename);

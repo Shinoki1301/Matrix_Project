@@ -4,7 +4,12 @@
  *
  * @details
  * Содержит реализацию операций с файлами и консольным выводом для
- * матричных операций
+ * матричных операций:
+ * - Вывод матрицы в консоль  
+ * - Сохранение матрицы в файл  
+ * - Загрузка матрицы из файла
+ *
+ * @note Все функции включают проверку входных параметров
  */
 
 #include "output.h"
@@ -38,9 +43,9 @@ void output_print_matrix (int rows, int cols, const double* data) {
  * @param rows Количество строк
  * @param cols Количество столбцов
  * @param data Указатель на массив данных
- * @param filename Указатель куда нужно сохранить данные
+ * @param filename Указатель на файл для сохранения матрицы
  *
- * @return NULL при ошибке или указатель на созданную матрицу
+ * @return 0 при успехе, -1 при ошибке
  */
 int output_save_matrix_to_file (int rows, int cols, const double* data,
                                 const char* filename) {
@@ -75,7 +80,7 @@ int output_save_matrix_to_file (int rows, int cols, const double* data,
  *
  * @param rows Количество строк
  * @param cols Количество столбцов
- * @param filename Указатель куда нужно сохранить данные
+ * @param filename Указатель на файл с матрицей для чтения
  * @return NULL при ошибке или указатель на созданную матрицу
  */
 double* output_load_matrix_from_file (int* rows, int* cols, const char* filename) {
