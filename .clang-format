@@ -1,0 +1,56 @@
+# Базовый стиль
+BasedOnStyle: LLVM
+
+
+# Язык
+Language: Cpp   
+Standard: Cpp11
+
+
+# Отступы
+IndentWidth: 4                                       # Отступ — 2 пробела
+TabWidth: 4                                          # Ширина таба — 2 пробела
+UseTab: Never                                        # Таб только для отступов, выравнивание 
+                                                     # пробелами
+
+# Скобки и блоки
+AllowShortFunctionsOnASingleLine: None               # Даже короткие функции — в несколько строк
+KeepEmptyLinesAtTheStartOfBlocks: true               # Сохраняет пустые строчки в начале блока
+
+
+# Выравнивание
+AlignAfterOpenBracket: Align                         # Выравнивание аргументов функции
+AlignConsecutiveDeclarations: true                   # Выравнивание типы переменных идущих подряд
+AlignOperands: true                                  # Выравнивание операндов в арифметических и
+                                                     # логических выражениях
+AlignTrailingComments: true                          # Выравнивание коментариев после кода
+ReflowComments: true                                 # Выравнивание и перенос многострочных 
+                                                     # коментариев
+SpacesBeforeTrailingComments: 3                      # Число пробелов между кодом и коментом
+AlignConsecutiveAssignments: true                    # Выравнивание = при воследовательном присваивании
+PointerAlignment: Left                               # Выравнивание указателя слева
+DerivePointerAlignment: false                        # Запрещает автоматическое определение выравнивания 
+                                                     # указателей
+
+
+# Управление include'ами
+SortIncludes: true                                   # Автоматическая сортировка include
+IncludeBlocks: Regroup                               # Группирует и разделяет include 
+
+
+# Перенос строк
+ColumnLimit: 85                                      # Максимальная длина строки
+BreakBeforeBraces: Attach                            # Стиль расстановки фигурных скобок
+BreakBeforeTernaryOperators: true                    # Перенос длинных тернарных выражения с 
+                                                     # операторами
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse   # Разрешает короткие if на 1 строке
+SeparateDefinitionBlocks: Always                     # Добавляет пустые строки между определениями функций
+                                                     # или других блоков
+
+
+#Пробелы
+SpaceBeforeParens: Always                            # Всегда добавлять пробел перед ()
+SpaceAfterCStyleCast: true                           # Добавление пробел после приведения типа
+SpaceBeforeAssignmentOperators: true                 # Добавление пробела перед =
+
+
