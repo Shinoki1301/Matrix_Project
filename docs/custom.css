@@ -1,0 +1,49 @@
+/**
+ * @file custom.css
+ * @brief Модуль настройки внешнего вида для сайта от Doxygen
+ */
+
+/* Основной фон всей страницы */
+body {
+    background: linear-gradient(180deg, #0a0f1a, #131a26, #1c2433);
+    background-attachment: fixed;
+    color: #c0c0c0; /* Светло-серый текст для контраста */
+}
+
+/* Основной контейнер контента */
+.contents {
+    background-color: rgba(20, 20, 30, 0.9); /* Темно-серый фон с прозрачностью */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Заголовки */
+h1, h2, h3 {
+    color: #ff6699; /* Насыщенный розовый или другой яркий цвет */
+}
+
+/* Кодовые блоки */
+pre, code {
+    background-color: #0d1117; /* Темный фон для кода */
+    color: #c9d1d9; /* Светло-серый текст */
+    border: 1px solid #30363d;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+/* Навигационное меню */
+.navpath {
+    background-color: #0f172a; /* Еще темнее верхняя панель */
+    color: #c0c0c0;
+}
+
+/* Ссылки */
+a {
+    color: #66ccff; /* Голубые ссылки */
+}
+
+a:hover {
+    color: #ffcc66; /* Оранжевый при наведении */
+}
+
