@@ -38,7 +38,7 @@ typedef struct {
  * @brief Создает новую матрицу с заданными размерами
  * @param rows Количество строк
  * @param cols Количество столбцов
- * @return Указатель на созданную матрицу или NULL в случае ошибки
+ * @return Структура Matrix при успехе или нулевая матрица при ошибке
  */
 Matrix create_matrix (int rows, int cols);
 
@@ -51,13 +51,13 @@ void free_matrix (Matrix* matrix);
 /**
  * @brief Загружает матрицу из текстового файла
  * @param filename Имя файла
- * @return Указатель на загруженную матрицу или NULL в случае ошибки
+ * @return Загруженную матрицу или нулевую матицу в случае ошибки
  */
 Matrix load_matrix_from_file (const char* filename);
 
 /**
  * @brief Выводит матрицу в консоль
- * @param matrix Указатель на матрицу
+ * @param matrix Указатель на матрицу для вывода
  */
 void print_matrix (const Matrix* matrix);
 
@@ -73,9 +73,8 @@ int save_matrix_to_file (const Matrix* matrix, const char* filename);
  * @brief Складывает две матрицы
  * @param A Указатель на первую матрицу
  * @param B Указатель на вторую матрицу
- * @param result Выводная матрица
- * @return Указатель на новую матрицу — результат сложения, либо NULL в
- * случае ошибки
+ * @param result Результирующая матрица
+ * @return 0 при успехе, -1 при ошибке
  */
 int add_matrices (const Matrix* A, const Matrix* B, Matrix* result);
 
@@ -83,9 +82,8 @@ int add_matrices (const Matrix* A, const Matrix* B, Matrix* result);
  * @brief Вычитает две матрицы
  * @param A Указатель на первую матрицу
  * @param B Указатель на вторую матрицу
- * @param result Выводная матрица
- * @return Указатель на новую матрицу — результат вычитания, либо NULL в
- * случае ошибки
+ * @param result Результирующая матрица
+ * @return 0 при успехе, -1 при ошибке
  */
 int subtract_matrices (const Matrix* A, const Matrix* B, Matrix* result);
 
@@ -94,16 +92,14 @@ int subtract_matrices (const Matrix* A, const Matrix* B, Matrix* result);
  * @param A Указатель на первую матрицу
  * @param B Указатель на вторую матрицу
  * @param result Выводная матрица
- * @return Указатель на новую матрицу — результат умножения, либо NULL в
- * случае ошибки
+ * @return 0 при успехе, 1 при ошибке
  */
 int multiply_matrices (const Matrix* A, const Matrix* B, Matrix* result);
 
 /**
  * @brief Транспонирует матрицу
  * @param matrix Указатель на матрицу
- * @return Указатель на новую транспонированную матрицу, либо NULL в случае
- * ошибки
+ * @return Транспонированная матрица или нулевая матрица при ошибке
  */
 Matrix transpose_matrix (const Matrix* matrix);
 
@@ -111,7 +107,7 @@ Matrix transpose_matrix (const Matrix* matrix);
  * @brief Вычисляет детерминант квадратной матрицы
  * @param matrix Указатель на квадратную матрицу
  * @note Использует рекурсивный алгоритм
- * @return Значение детерминанта матрицы
+ * @return Значение детерминанта матрицы или 0 при ошибке
  */
 MATRIX_TYPE determinant (const Matrix* matrix);
 

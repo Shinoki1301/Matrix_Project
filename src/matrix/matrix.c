@@ -31,13 +31,14 @@
  *
  * @param rows Количество строк (должно быть > 0)
  * @param cols Количетство столбцов (должно быть > 0)
- * @return Возвращает NULL при ошибке или указатель на новую матрицу
+ * @return Структура Matrix при успехе, нулевая матрица при ошибке
  */
 Matrix create_matrix (int rows, int cols) {
     Matrix mat = {0, 0, NULL};   // Инициализация пустой матрицы
     int res = 1;   // Флаг успешности выполнения
 
-    if (rows <= 0 || cols <= 0) res = 0;   // Некорректные размеры
+    // Проверка корректности размеров
+    if (rows <= 0 || cols <= 0) res = 0;
 
     else {
         mat.rows = rows;
@@ -47,6 +48,7 @@ Matrix create_matrix (int rows, int cols) {
         if (mat.data == NULL) res = 0;   // Ошибка выделения
 
         else {
+            // Выделение памяти под каждую строку
             for (int index_row = 0; index_row < rows && res; index_row++) {
                 mat.data[index_row] =
                     (MATRIX_TYPE*) malloc (cols * sizeof (MATRIX_TYPE));
@@ -74,7 +76,7 @@ Matrix create_matrix (int rows, int cols) {
 /**
  * @brief Освобождает память занятую матрицей
  *
- * @param matrix Указатель на матрицу (может быть NULL)
+ * @param matrix Указатель на Matrix
  */
 void free_matrix (Matrix* matrix) {
     if (matrix->data != NULL && matrix != NULL) {
@@ -93,7 +95,7 @@ void free_matrix (Matrix* matrix) {
  *
  * @param filename Путь к файлу с матрицей
  *
- * @return Возвращает NULL при ошибке или указатель на загруженную матрицу
+ * @return Загруженную матрицу или нулевую матрицу при ошибке
  */
 Matrix load_matrix_from_file (const char* filename) {
     int     rows, cols;
@@ -101,7 +103,7 @@ Matrix load_matrix_from_file (const char* filename) {
     Matrix mat = {0, 0, NULL};   // Инициализация пустой матрицы
     int res = 1;   // Флаг успешности выполнения
 
-    // Загрузка данных из файла
+    // Загрузка данных из файла через функцию из output.c
     data = output_load_matrix_from_file (&rows, &cols, filename);
     if (!data) res = 0;   // Ошибка загрузки
 
@@ -139,6 +141,7 @@ void print_matrix (const Matrix* matrix) {
     double* data = NULL;
     int     res  = 1;
 
+    // Проверка входных данных
     if (!matrix || !matrix->data) res = 0;
 
     if (res) {
@@ -154,6 +157,7 @@ void print_matrix (const Matrix* matrix) {
                     matrix->data[index_row][index_col];
             }
         }
+        // Вызов функции вывода
         output_print_matrix (matrix->rows, matrix->cols, data);
     }
 
@@ -163,8 +167,8 @@ void print_matrix (const Matrix* matrix) {
 /**
  * @brief Сохраняет матрицу в файл
  *
- * @param matrix Указатель на сохраняемую матрицу
- * @param filename Имя целевого файла
+ * @param matrix Указатель на матрицу
+ * @param filename Имя выходного файла
  *
  * @return Возвращает -1 при ошибке и 0 при успешной отработке функции
  */
@@ -173,6 +177,7 @@ int save_matrix_to_file (const Matrix* matrix, const char* filename) {
     int     result = -1;
     int     res    = 1;
 
+    // Проверка входных данных
     if (!matrix || !matrix->data) res = 0;
 
     if (res) {
@@ -200,17 +205,20 @@ int save_matrix_to_file (const Matrix* matrix, const char* filename) {
 /**
  * @brief Складывает две матрицы
  *
+ * Поэлементно складывает две матрицы одинакового размера.
+ * Результат записывает в матрицу result.
+ *
  * @param A Указатель на первую матрицу
  * @param B Указатель на вторую матрицу
- * @param result Выходная матрица
+ * @param result Результурующая матрица
  *
- * @return NULL при ошибке или указатель на матрицу результат
+ * @return 0 при успехе, -1 при ошибке
  */
 int add_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
-    int res            = -1;
-    int rows_match     = 0;
-    int cols_match     = 0;
-    int pointers_valid = 0;
+    int res        = -1;   // Флаг ошибок
+    int rows_match = 0;    // Флаг совпадения числа строк
+    int cols_match = 0;   // Флаг совпадения числа столбцой
+    int pointers_valid = 0;   // Флаг для указателей
 
     // Проверка указателей
     pointers_valid = (A != NULL) && (B != NULL) && (result != NULL);
@@ -228,7 +236,7 @@ int add_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
                         B->data[index_row][index_col];
                 }
             }
-            res = 0;
+            res = 0;   // Успешное завершение
         }
     }
 
@@ -238,17 +246,20 @@ int add_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
 /**
  * @brief Вычитает две матрицы
  *
+ * Поэлементно вычитает матрицу B из матрицы А.
+ * Результат записывается в матрицу result.
+ *
  * @param A Указатель на первую матрицу
  * @param B Указатель на вторую матрицу
- * @param result Выходная матрица
+ * @param result Результирующая матрица
  *
- * @return NULL при ошибке или указатель на матрицу результат
+ * @return 0 при успехе, -1 при ошибке
  */
 int subtract_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
-    int res            = -1;
-    int rows_match     = 0;
-    int cols_match     = 0;
-    int pointers_valid = 0;
+    int res            = -1;   // Флаг ошибок
+    int rows_match     = 0;    // Флаг совпадения строк
+    int cols_match     = 0;    // Флаг совпадения столбцоы
+    int pointers_valid = 0;    // Флаг для указателей
 
     // Проверка указателей
     pointers_valid = (A != NULL) && (B != NULL) && (result != NULL);
@@ -276,16 +287,20 @@ int subtract_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
 /**
  * @brief Умножение двух матриц
  *
+ * Выполняет матрицное умножения A x B
+ *
  * @param A Указатель на первую матрицу
  * @param B Указатель на вторую матрицу
- * @param result Выходная матрица
+ * @param result Результирующая матрица
  *
- * @return NULL при ошибке или указатель на матрицу результат
+ * @note Число столбцов А должно совпадать с числом строк В.
+ *
+ * @return 0 при успехе, 1 при ошибке
  */
 int multiply_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
-    int res             = 1;
-    int size_compatible = 0;
-    int pointers_valid  = 0;
+    int res = 1;               // Флаг ошибок
+    int size_compatible = 0;   // Флаг совместимости размеров
+    int pointers_valid = 0;    // Флаг для указателей
 
     // Проверка указателей
     pointers_valid = (A != NULL) && (B != NULL) && (result != NULL);
@@ -314,9 +329,12 @@ int multiply_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
 /**
  * @brief Транспонирует матрицу
  *
+ * Создает новую матрицу - транспонированную версию исходной.
+ * Строки становятся столбцами и наоборот.
+ *
  * @param matrix Указатель на матрицу
  *
- * @return NULL при ошибке или указатель на матрицу результат
+ * @return Транспонированная матрица или нулевая матрица при ошибке
  */
 Matrix transpose_matrix (const Matrix* matrix) {
     Matrix res         = {0};
@@ -341,17 +359,19 @@ Matrix transpose_matrix (const Matrix* matrix) {
 }
 
 /**
- * @brief Вычисляет детерминант квадратной матрицы
+ * @brief Вычисляет определитель матрицы
+ *
+ * Вычисляет определитель квадратной матрицы.
  *
  * @param matrix Указатель на квадратную матрицу
  *
- * @note Используется рекурсивный алгоритм
+ * @note Используется рекурсивный алгоритм разложения по первой строке.
  *
  * @return 0 при ошибке или значение детерминанта
  */
 MATRIX_TYPE determinant (const Matrix* matrix) {
-    MATRIX_TYPE det       = 0;
-    int         is_square = 0;
+    MATRIX_TYPE det       = 0;   // Значение определителя
+    int         is_square = 0;   // Флаг квадратности матрицы
 
     // Проверка входных данных
     is_square =
