@@ -145,7 +145,6 @@ make docs-open
 
 **Для удаления документации:**
 ```sh
-i
 make docs-clean
 ```
 
