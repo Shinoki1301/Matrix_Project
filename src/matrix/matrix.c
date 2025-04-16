@@ -20,6 +20,7 @@
  */
 
 #include "matrix.h"
+#include "../errors/errors.h"
 
 #include "../output/output.h"
 
@@ -38,22 +39,26 @@ Matrix create_matrix (int rows, int cols) {
     int res = 1;   // Флаг успешности выполнения
 
     // Проверка корректности размеров
-    if (rows <= 0 || cols <= 0) res = 0;
-
-    else {
+    if (rows <= 0 || cols <= 0) {
+        res = 0;
+        print_error (ERROR_INVALID_DIMENSIONS, "create_matrix");
+    } else {
         mat.rows = rows;
         mat.cols = cols;
         mat.data = (MATRIX_TYPE**) malloc (rows * sizeof (MATRIX_TYPE*));
 
-        if (mat.data == NULL) res = 0;   // Ошибка выделения
-
-        else {
+        if (mat.data == NULL) {
+            res = 0;   // Ошибка выделения
+            print_error (ERROR_MEMORY_ALLOCATION, "create_matrix");
+        } else {
             // Выделение памяти под каждую строку
             for (int index_row = 0; index_row < rows && res; index_row++) {
                 mat.data[index_row] =
                     (MATRIX_TYPE*) malloc (cols * sizeof (MATRIX_TYPE));
-                if (mat.data[index_row] == NULL)
+                if (mat.data[index_row] == NULL) {
                     res = 0;   // Ошибка выделения памяти
+                    print_error (ERROR_MEMORY_ALLOCATION, "create_matrix");
+                }
             }
         }
     }
@@ -105,11 +110,17 @@ Matrix load_matrix_from_file (const char* filename) {
 
     // Загрузка данных из файла через функцию из output.c
     data = output_load_matrix_from_file (&rows, &cols, filename);
-    if (!data) res = 0;   // Ошибка загрузки
+    if (!data) {
+        res = 0;   // Ошибка загрузки
+        print_error (ERROR_FILE_IO, "load_matrix_from_file");
+    }
 
     if (res) {
         mat = create_matrix (rows, cols);
-        if (mat.data == NULL) res = 0;   // Ошибка создания матрицы
+        if (mat.data == NULL) {
+            res = 0;   // Ошибка создания матрицы
+            print_error (ERROR_MEMORY_ALLOCATION, "load_matrix_from_file");
+        }
     }
 
     if (res) {
@@ -142,12 +153,18 @@ void print_matrix (const Matrix* matrix) {
     int     res  = 1;
 
     // Проверка входных данных
-    if (!matrix || !matrix->data) res = 0;
+    if (!matrix || !matrix->data) {
+        res = 0;
+        print_error (ERROR_NULL_PTR, "print_matrix");
+    }
 
     if (res) {
         data = malloc (matrix->rows * matrix->cols * sizeof (double));
 
-        if (!data) res = 0;
+        if (!data) {
+            res = 0;
+            print_error (ERROR_MEMORY_ALLOCATION, "print_matrix");
+        }
     }
 
     if (res) {
@@ -167,7 +184,7 @@ void print_matrix (const Matrix* matrix) {
 /**
  * @brief Сохраняет матрицу в файл
  *
- * @param matrix Указатель на матрицу
+ * @param matrix Указатель на сохраняемую матрицу
  * @param filename Имя выходного файла
  *
  * @return Возвращает -1 при ошибке и 0 при успешной отработке функции
@@ -178,12 +195,18 @@ int save_matrix_to_file (const Matrix* matrix, const char* filename) {
     int     res    = 1;
 
     // Проверка входных данных
-    if (!matrix || !matrix->data) res = 0;
+    if (!matrix || !matrix->data) {
+        res = 0;
+        print_error (ERROR_NULL_PTR, "save_matrix_to_file");
+    }
 
     if (res) {
         data = malloc (matrix->rows * matrix->cols * sizeof (double));
 
-        if (!data) res = 0;
+        if (!data) {
+            res = 0;
+            print_error (ERROR_MEMORY_ALLOCATION, "save_matrix_file");
+        }
     }
 
     if (res) {
@@ -206,28 +229,31 @@ int save_matrix_to_file (const Matrix* matrix, const char* filename) {
  * @brief Складывает две матрицы
  *
  * Поэлементно складывает две матрицы одинакового размера.
- * Результат записывает в матрицу result.
+ * Результат записывается в матрицу result.
  *
  * @param A Указатель на первую матрицу
  * @param B Указатель на вторую матрицу
- * @param result Результурующая матрица
+ * @param result Результирующая матрица
  *
  * @return 0 при успехе, -1 при ошибке
  */
 int add_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
     int res        = -1;   // Флаг ошибок
-    int rows_match = 0;    // Флаг совпадения числа строк
-    int cols_match = 0;   // Флаг совпадения числа столбцой
+    int rows_match = 0;    // Флаг совпадение числа строк
+    int cols_match = 0;   // Флаг совпадения числа столбцов
     int pointers_valid = 0;   // Флаг для указателей
 
     // Проверка указателей
     pointers_valid = (A != NULL) && (B != NULL) && (result != NULL);
 
-    if (pointers_valid) {
+    if (!pointers_valid) print_error (ERROR_NULL_PTR, "add_matrices");
+    else {
         // Проверка размеров
         rows_match = (A->rows == B->rows);
         cols_match = (A->cols == B->cols);
-        if (rows_match && cols_match) {
+        if (!rows_match || !cols_match)
+            print_error (ERROR_INVALID_DIMENSIONS, "add_matrices");
+        else {
             // Выполнение сложения
             for (int index_row = 0; index_row < A->rows; index_row++) {
                 for (int index_col = 0; index_col < A->cols; index_col++) {
@@ -246,7 +272,7 @@ int add_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
 /**
  * @brief Вычитает две матрицы
  *
- * Поэлементно вычитает матрицу B из матрицы А.
+ * Поэлементно вычитает матрицу В из матрицы матрицы А.
  * Результат записывается в матрицу result.
  *
  * @param A Указатель на первую матрицу
@@ -258,17 +284,19 @@ int add_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
 int subtract_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
     int res            = -1;   // Флаг ошибок
     int rows_match     = 0;    // Флаг совпадения строк
-    int cols_match     = 0;    // Флаг совпадения столбцоы
+    int cols_match     = 0;    // Флаг совпадения столбцов
     int pointers_valid = 0;    // Флаг для указателей
 
     // Проверка указателей
     pointers_valid = (A != NULL) && (B != NULL) && (result != NULL);
-
-    if (pointers_valid) {
+    if (!pointers_valid) print_error (ERROR_NULL_PTR, "subtract_matrices");
+    else {
         // Проверка размеров
         rows_match = (A->rows == B->rows);
         cols_match = (A->cols == B->cols);
-        if (rows_match && cols_match) {
+        if (!rows_match || !cols_match)
+            print_error (ERROR_INVALID_DIMENSIONS, "subtract_matrices");
+        else {
             // Выполнение вычитания
             for (int index_row = 0; index_row < A->rows; index_row++) {
                 for (int index_col = 0; index_col < A->cols; index_col++) {
@@ -277,7 +305,7 @@ int subtract_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
                         B->data[index_row][index_col];
                 }
             }
-            res = 0;
+            res = 0;   // Успешное завершение
         }
     }
 
@@ -287,43 +315,38 @@ int subtract_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
 /**
  * @brief Умножение двух матриц
  *
- * Выполняет матрицное умножения A x B
+ * Выполняет матричное умножение A x B
  *
  * @param A Указатель на первую матрицу
  * @param B Указатель на вторую матрицу
  * @param result Результирующая матрица
  *
- * @note Число столбцов А должно совпадать с числом строк В.
+ * @note Число столбцов матрицы А, должно совпадать с числом строк матрицы В.
  *
  * @return 0 при успехе, 1 при ошибке
  */
 int multiply_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
-    int res = 1;               // Флаг ошибок
-    int size_compatible = 0;   // Флаг совместимости размеров
-    int pointers_valid = 0;    // Флаг для указателей
+    int res = 1;   // Флаг ошибок
+    int pointers_valid = (A != NULL) && (B != NULL) && (result != NULL);
+    int size_compatible =
+        pointers_valid ? (A->cols == B->rows) : 0;   // Флаг совместимости размеров
 
-    // Проверка указателей
-    pointers_valid = (A != NULL) && (B != NULL) && (result != NULL);
-
-    if (pointers_valid) {
-        // Проверка совместимости размеров
-        size_compatible = (A->cols == B->rows);
-        if (size_compatible) {
-            // Выполнение умножения
-            for (int index_row = 0; index_row < A->rows; index_row++) {
-                for (int index_col = 0; index_col < B->cols; index_col++) {
-                    MATRIX_TYPE sum = 0;
-                    for (int k = 0; k < A->cols; k++) {
-                        sum += A->data[index_row][k] * B->data[k][index_col];
-                    }
-                    result->data[index_row][index_col] = sum;
+    if (!pointers_valid) print_error (ERROR_NULL_PTR, "multiply_matrices");
+    else if (!size_compatible) print_error (ERROR_SIZE_MATRIX, "multiply_matrices");
+    else {
+        for (int index_row = 0; index_row < A->rows; index_row++) {
+            for (int index_col = 0; index_col < B->cols; index_col++) {
+                MATRIX_TYPE sum = 0;
+                for (int k = 0; k < A->cols; k++) {
+                    sum += A->data[index_row][k] * B->data[k][index_col];
                 }
+                result->data[index_row][index_col] = sum;
             }
-            res = 0;
         }
+        res = 0;
     }
 
-    return res;
+return res;
 }
 
 /**
@@ -343,9 +366,12 @@ Matrix transpose_matrix (const Matrix* matrix) {
     // Проверка входных данных
     input_valid = (matrix != NULL) && (matrix->rows > 0) && (matrix->cols > 0);
 
-    if (input_valid) {
+    if (!input_valid) print_error (ERROR_INVALID_DIMENSIONS, "transpose_matrix");
+    else {
         res = create_matrix (matrix->cols, matrix->rows);
-        if (res.data != NULL) {
+        if (res.data == NULL)
+            print_error (ERROR_MEMORY_ALLOCATION, "transpose_matrix");
+        else {
             for (int index_row = 0; index_row < matrix->rows; index_row++) {
                 for (int index_col = 0; index_col < matrix->cols; index_col++) {
                     res.data[index_col][index_row] =
@@ -365,19 +391,20 @@ Matrix transpose_matrix (const Matrix* matrix) {
  *
  * @param matrix Указатель на квадратную матрицу
  *
- * @note Используется рекурсивный алгоритм разложения по первой строке.
+ * @note Используется рекурсивный алгоритм разложения по первой строке
  *
  * @return 0 при ошибке или значение детерминанта
  */
 MATRIX_TYPE determinant (const Matrix* matrix) {
-    MATRIX_TYPE det       = 0;   // Значение определителя
+    MATRIX_TYPE det = 0;   // Значение квадратной матрицы
     int         is_square = 0;   // Флаг квадратности матрицы
 
     // Проверка входных данных
     is_square =
         (matrix != NULL) && (matrix->rows == matrix->cols) && (matrix->rows > 0);
 
-    if (is_square) {
+    if (!is_square) print_error (ERROR_MATRIX_NOT_SQUARE, "determinant");
+    else {
         // Основная логика вычисления
         const int n = matrix->rows;
         if (n == 1) {
@@ -388,7 +415,9 @@ MATRIX_TYPE determinant (const Matrix* matrix) {
         } else {
             for (int index_col = 0; index_col < n; index_col++) {
                 Matrix submat = create_matrix (n - 1, n - 1);
-                if (submat.data != NULL) {
+                if (submat.data == NULL)
+                    print_error(ERROR_MEMORY_ALLOCATION, "determinant");
+                else {
                     // Заполнение подматрицы
                     for (int index_row = 1; index_row < n; index_row++) {
                         int subcol_index = 0;
@@ -412,3 +441,4 @@ MATRIX_TYPE determinant (const Matrix* matrix) {
 
     return det;
 }
+
