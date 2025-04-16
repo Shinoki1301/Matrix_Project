@@ -27,7 +27,8 @@ DATA_DIR  = data
 # --------------------------------
 SRCS = $(wildcard $(SRC_DIR)/*.c) \
        $(wildcard $(SRC_DIR)/matrix/*.c) \
-       $(wildcard $(SRC_DIR)/output/*.c)
+       $(wildcard $(SRC_DIR)/output/*.c) \
+       $(wildcard $(SRC_DIR)/errors/*.c)
 
 OBJS = $(patsubst $(SRC_DIR)/%, $(BUILD_DIR)/%, $(SRCS:.c=.o))
 
@@ -170,3 +171,4 @@ help:
 	@echo "    make docs-clean - Удалить сгенерированную документацию"
 	@echo ""
 	@echo "    make help       - Показать эту справку"
+
