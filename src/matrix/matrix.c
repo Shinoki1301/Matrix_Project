@@ -237,11 +237,12 @@ int add_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
     // Проверка указателей
     pointers_valid = (A != NULL) && (B != NULL) && (result != NULL);
 
-    if (!pointers_valid)
+    if (!pointers_valid) res = -1;
     else {
         // Проверка размеров
         rows_match = (A->rows == B->rows);
         cols_match = (A->cols == B->cols);
+	if (!rows_match || !cols_match) res = -1;
         else {
             // Выполнение сложения
             for (int index_row = 0; index_row < A->rows; index_row++) {
@@ -278,10 +279,12 @@ int subtract_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
 
     // Проверка указателей
     pointers_valid = (A != NULL) && (B != NULL) && (result != NULL);
+    if(!pointers_valid) res = -1;
     else {
         // Проверка размеров
         rows_match = (A->rows == B->rows);
         cols_match = (A->cols == B->cols);
+	if(!rows_match || !cols_match) res = -1;
         else {
             // Выполнение вычитания
             for (int index_row = 0; index_row < A->rows; index_row++) {
@@ -317,6 +320,7 @@ int multiply_matrices (const Matrix* A, const Matrix* B, Matrix* result) {
     int size_compatible =
         pointers_valid ? (A->cols == B->rows) : 0;   // Флаг совместимости размеров
 
+    if(!pointers_valid || !size_compatible) res = 1;
     else {
         for (int index_row = 0; index_row < A->rows; index_row++) {
             for (int index_col = 0; index_col < B->cols; index_col++) {
@@ -350,9 +354,9 @@ Matrix transpose_matrix (const Matrix* matrix) {
     // Проверка входных данных
     input_valid = (matrix != NULL) && (matrix->rows > 0) && (matrix->cols > 0);
 
-    else {
+    if(input_valid) {
         res = create_matrix (matrix->cols, matrix->rows);
-        else {
+        if(res.data != NULL){
             for (int index_row = 0; index_row < matrix->rows; index_row++) {
                 for (int index_col = 0; index_col < matrix->cols; index_col++) {
                     res.data[index_col][index_row] =
@@ -384,7 +388,7 @@ MATRIX_TYPE determinant (const Matrix* matrix) {
     is_square =
         (matrix != NULL) && (matrix->rows == matrix->cols) && (matrix->rows > 0);
 
-    else {
+    if(is_square) {
         // Основная логика вычисления
         const int n = matrix->rows;
         if (n == 1) {
@@ -395,7 +399,7 @@ MATRIX_TYPE determinant (const Matrix* matrix) {
         } else {
             for (int index_col = 0; index_col < n; index_col++) {
                 Matrix submat = create_matrix (n - 1, n - 1);
-                else {
+                if (submat.data != NULL) {
                     // Заполнение подматрицы
                     for (int index_row = 1; index_row < n; index_row++) {
                         int subcol_index = 0;
