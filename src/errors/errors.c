@@ -8,11 +8,11 @@
 
 #include <stdio.h>
 
-/** 
+/**
  * @brief Пишет текстовое сообщение с названием ошибки
- * 
+ *
  * @param code Код ошибки
- * 
+ *
  * @return Текстовое описание ошибки
  */
 const char* error_message (error_code code) {
@@ -46,4 +46,3 @@ void print_error (error_code code, const char* function) {
     fprintf (stderr, "Ошибка в функции %s. Код ошибки %d: %s\n", function, code,
              error_message (code));
 }
-

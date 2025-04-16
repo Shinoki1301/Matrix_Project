@@ -35,4 +35,3 @@ const char* error_message (error_code);
 void print_error (error_code code, const char* function);
 
 #endif
-
