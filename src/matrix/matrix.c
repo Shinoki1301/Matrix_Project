@@ -21,7 +21,6 @@
 
 #include "matrix.h"
 
-#include "../errors/errors.h"
 #include "../output/output.h"
 
 #include <stdio.h>
